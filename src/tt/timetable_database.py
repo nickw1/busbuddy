@@ -15,11 +15,13 @@ class TimetableDatabase:
         self.day_of_week_list = list(DayOfWeek)
         self.timetable_dir = timetable_dir
         
-    def populate(self,operator_code, date=None, service_code=None):
-        pattern = f"BODS_{operator_code}_{service_code}_{date}_*.xml" if date is not None and service_code is not None else f"BODS_{operator_code}_*.xml"
+    def populate(self, operator_code, dataset_id, date, service_code=None):
+        pattern = f"BODS_{operator_code}_{service_code}_*.xml" if service_code is not None else f"BODS_{operator_code}_*.xml"
         print(pattern)
         file = None
-        globbed = Path(self.timetable_dir).glob(pattern)
+        self.cur.execute("INSERT INTO tt_revisions(dataset_id, date) VALUES(%s, %s) RETURNING id", (dataset_id, date))
+        rev_id = self.cur.fetchone()[0]
+        globbed = Path(f"{self.timetable_dir}/{dataset_id}/{date}").glob(pattern)
         for g in globbed:
             file = g
             print(file)
@@ -37,7 +39,7 @@ class TimetableDatabase:
                     op_prof = vj.operating_profile.days_of_week
                     line = vj.line_ref.resolve().line_name
                     run_days = [enumday.name[0:2].title() for enumday in op_prof]
-                    journey_id=self.dao.insert_journey(block_number, line, operator.id, dest, dep_time, run_days, direction)
+                    journey_id=self.dao.insert_journey(block_number, line, operator.id, dest, dep_time, run_days, direction, rev_id)
         
                     first_stop = None
                     total_run_time = 0

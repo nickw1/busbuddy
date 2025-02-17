@@ -3,8 +3,8 @@ class JourneyDao:
     def __init__(self, cur):
         self.cur = cur
 
-    def insert_journey(self, block_ref, line, operator_id, dest, dep_time, run_days, direction):
-        self.cur.execute("INSERT INTO journeys(block_ref,route,operator_name,destination,deptime,run_days,direction) VALUES(%s,%s,%s,%s,%s,%s,%s) RETURNING id", (block_ref, line, operator_id, dest, dep_time, ",".join(run_days), direction))
+    def insert_journey(self, block_ref, line, operator_id, dest, dep_time, run_days, direction, rev_id):
+        self.cur.execute("INSERT INTO journeys(block_ref,route,operator_name,destination,deptime,run_days,direction,rev_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id", (block_ref, line, operator_id, dest, dep_time, ",".join(run_days), direction, rev_id))
         return self.cur.fetchone()[0]
 
     def find_journey(self, day, time, route, direction):

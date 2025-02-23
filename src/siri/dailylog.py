@@ -1,3 +1,5 @@
+# populate the daily journey log
+# do at the end of each day
 
 import psycopg
 import dotenv

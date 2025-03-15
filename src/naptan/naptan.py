@@ -8,7 +8,7 @@ with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('
 
     with conn.cursor() as cur:
 
-        with open('naptan.csv') as f:
+        with open(f"{os.environ.get('TIMETABLE_DIR')}/naptan.csv") as f:
             for linestr in f:
                 line = linestr.rstrip().split(",")
                 print(line)

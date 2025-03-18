@@ -1,0 +1,19 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "busbuddy"
+version = "0.0.1"
+authors = [{name = "nickw"}]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dynamic = ["description"]
+
+dependencies = [
+    "psycopg>=3.2.3,<4",
+    "pytxc>=0.1.6",
+    "python-dotenv>=1.0.1,<2",
+    "bods-client==0.12.0",
+]

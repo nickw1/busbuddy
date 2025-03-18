@@ -3,7 +3,7 @@ from pathlib import Path
 from pytxc import Timetable
 from pytxc.services import DayOfWeek
 from functions import parse_run_time
-from bodsdao import journey 
+from busbuddy.bodsdao import journey 
 import sys
 
 class TimetableDatabase:

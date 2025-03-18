@@ -9,7 +9,7 @@ import datetime
 import psycopg
 import os
 from dotenv import load_dotenv
-from bodsdao import journey # set PYTHONPATH to ..
+from busbuddy.bodsdao import journey
 
 load_dotenv()
 

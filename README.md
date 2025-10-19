@@ -24,10 +24,11 @@ However, the SIRI (live bus running info) data appears to more reliably contain 
 
 The repo contains various programs within the directories:
 
-`naptan` - Populates a database table of NaPTAN stops. Requires a NaPTAN data file. Needed for timetable population, below, but need only be run as often as stops change (which is probably quite infrequently).
-`tt` - Populates a timetable database table using the TransXChange XML files, using `pytxc` (see below). Should be run each time a new timetable is released.
-`siri` - Downloads live vehicle data fron the SIRI API using `python-bods-client` (see below), finds which journey each currently-running vehicle is doing, and updates the corresponding journey in the timetable database table with the vehicle ID and block number from the SIRI data. Designed to be run as a cron job, or similar, e.g. every 5 minutes.
-`analyse` - Saves the vehicles and block numbers for the current day's journeys in a daily journey log table, and resets the vehicle IDs and block numbers in the timetable database table to NULL ready for the following day. Should be done at the end of each day e.g. as a cron job. In the future, this will analyse the block numbers/vehicle IDs for day-to-day consistency, to attempt to draw up definite workings to be able to predict the running of a given journey based on its incoming working, as described above.
+- `naptan` : Populates a database table of NaPTAN stops. Requires a NaPTAN data file. Needed for timetable population, below, but need only be run as often as stops change (which is probably quite infrequently).
+- `tt` : Populates a timetable database table using the TransXChange XML files, using `pytxc` (see below). Should be run each time a new timetable is released.
+- `siri` : Downloads live vehicle data fron the SIRI API using `python-bods-client` (see below), finds which journey each currently-running vehicle is doing, and updates the corresponding journey in the timetable database table with the vehicle ID and block number from the SIRI data. Designed to be run as a cron job, or similar, e.g. every 5 minutes.
+- `dailylog` : Saves the vehicles and block numbers for the current day's journeys in a daily journey log table, and resets the vehicle IDs and block numbers in the timetable database table to NULL ready for the following day. Should be done at the end of each day e.g. as a cron job. 
+- `analyse` : Analyses the daily log over a period of several days (minimum 5) to try to find working patterns by looking at the first journeys of the day done by vehicles and tracing the vehicle during the course of the day, each day, to see what other journeys it does. If the journeys done are consistent (at least 50% of the time) this is considered an actual, real working and the `journeys` database table is updated accordingly.
 
 ## Thanks
 

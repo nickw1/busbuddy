@@ -1,9 +1,10 @@
 # id deptime blockref origin destination
 from pathlib import Path
+from datetime import datetime
 from pytxc import Timetable
 from pytxc.services import DayOfWeek
 from functions import parse_run_time
-from busbuddy.bodsdao import journey 
+from bodsdao import journey 
 import sys
 
 class TimetableDatabase:
@@ -15,19 +16,14 @@ class TimetableDatabase:
         self.day_of_week_list = list(DayOfWeek)
         self.timetable_dir = timetable_dir
         
-    def populate(self, operator_code, dataset_id, date, service_code=None):
-        pattern = f"BODS_{operator_code}_{service_code}_*.xml" if service_code is not None else f"BODS_{operator_code}_*.xml"
-        print(pattern)
-        file = None
-        self.cur.execute("INSERT INTO tt_revisions(dataset_id, date) VALUES(%s, %s) RETURNING id", (dataset_id, date))
+    def populate(self, modified, dataset_id, raw_xmls=None):
+        raw_xmls_provided = raw_xmls is not None 
+        self.cur.execute("INSERT INTO tt_revisions(dataset_id, date) VALUES(%s,%s) RETURNING id",(int(dataset_id), modified))
         rev_id = self.cur.fetchone()[0]
-        globbed = Path(f"{self.timetable_dir}/{dataset_id}/{date}").glob(pattern)
-        for g in globbed:
-            file = g
-            print(file)
-
-            if file is not None:
-                timetable = Timetable.from_file_path(Path(file))
+        pattern = "BODS_*.xml"
+        for tt in raw_xmls if raw_xmls_provided else globbed:
+            if tt is not None:
+                timetable = Timetable.from_string(tt) if raw_xmls_provided else Timetable.from_file_path(Path(tt))
 
                 for vj in timetable.vehicle_journeys:
                     dep_time = vj.departure_time

@@ -5,7 +5,7 @@
 # Use with cron or similar.
 from bods_client.client import BODSClient
 from bods_client.models import BoundingBox, SIRIVMParams, Siri
-import datetime
+from datetime import datetime
 import psycopg
 import os
 from dotenv import load_dotenv
@@ -33,8 +33,11 @@ try:
         with conn.cursor() as cur:
             dao = journey.JourneyDao(cur)
             print(f"\n\nSIRI:\n=====\n\n")
+            now = datetime.now()
+            time = now.strftime("%Y-%m-%d %H:%M:%S")
+            print(f"Started run at: {time}\n")
 
-            cur_day_of_week = datetime.date.today().strftime("%A")[0:2]
+            cur_day_of_week = now.strftime("%A")[0:2]
 
             for activity in siri.service_delivery.vehicle_monitoring_delivery.vehicle_activities:
                 deptime = activity.monitored_vehicle_journey.origin_aimed_departure_time
@@ -60,12 +63,12 @@ try:
 journey id={journey}
                     """)
                     if journey is not None:
-                        n_updated = dao.update_journey(
+                        (blocks_updated, vehicles_updated) = dao.update_journey(
                             journey, 
                             activity.monitored_vehicle_journey.block_ref, 
                             activity.monitored_vehicle_journey.vehicle_ref
                         )
-                        print(f"Updated {n_updated} journeys.")
+                        print(f"Updated {blocks_updated} blocks and {vehicles_updated} journeys.")
                     else:
                         print("Ignoring as cannot find this journey in the database.")
 except Exception as e:

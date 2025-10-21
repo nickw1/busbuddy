@@ -47,8 +47,8 @@ with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('
         counted={}
         print(f"Number of dates: {len(dates)}")
         ndates = len(dates)
-        if ndates < 5:
-            print("Error: a minimum of 5 dates is required.")
+        if ndates < 4:
+            print("Error: a minimum of 4 dates is required.")
         else:
             for wkey in workings:
                 operated_dates = len(workings[wkey])

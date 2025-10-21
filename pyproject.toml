@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "busbuddy"
-version = "0.0.2"
+version = "0.0.3"
 authors = [{name = "nickw"}]
 readme = "README.md"
 license = "GPL-3.0-or-later"

@@ -25,10 +25,22 @@ However, the SIRI (live bus running info) data appears to more reliably contain 
 The repo contains various programs within the directories:
 
 - `naptan` : Populates a database table of NaPTAN stops. Requires a NaPTAN data file. Needed for timetable population, below, but need only be run as often as stops change (which is probably quite infrequently).
-- `tt` : Populates a timetable database table using the TransXChange XML files, using `pytxc` (see below). Should be run each time a new timetable is released. Timetables are downloaded from BODS either by search term (e.g. `Bluestar`) or by dataset ID (e.g. `15876` for Bluestar).
+- `tt` : Populates a timetable database table using the TransXChange XML files, using `pytxc` (see below). Should be run each time a new timetable is released. Timetables are downloaded from BODS using `python-bods-client` (see below), either by specifying the search term (e.g. `Bluestar`) or the dataset ID (e.g. `15872` for Bluestar).
 - `siri` : Downloads live vehicle data fron the SIRI API using `python-bods-client` (see below), finds which journey each currently-running vehicle is doing, and updates the corresponding journey in the timetable database table with the vehicle ID and block number from the SIRI data. Designed to be run as a cron job, or similar, e.g. every 5 minutes.
 - `dailylog` : Saves the vehicles and block numbers for the current day's journeys in a daily journey log table, and resets the vehicle IDs and block numbers in the timetable database table to NULL ready for the following day. Should be done at the end of each day e.g. as a cron job. 
 - `analyse` : Analyses the daily log over a period of several days (minimum 5) to try to find working patterns by looking at the first journeys of the day done by vehicles and tracing the vehicle during the course of the day, each day, to see what other journeys it does. If the journeys done are consistent (at least 50% of the time) this is considered an actual, real working and the `journeys` database table is updated accordingly.
+
+## To install
+
+`busbuddy` is designed to be installed as a local package. Use 
+```
+pip3 install .
+```
+to install all dependencies and install `busbuddy` as a local package.
+
+## Also available
+
+[busbuddy-server](https://github.com/nickw1/busbuddy-server), a simple Express server which gets live SIRI data and returns the entire working a particular journey belongs to. Works with the fully populated database from the suite of tools above.
 
 ## Thanks
 

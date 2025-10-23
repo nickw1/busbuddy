@@ -27,8 +27,8 @@ def process_timetable(url, dataset_id, out_dir):
                     try:
                         xml = xmlfile.read()
                         if save_tt:
-                            with open(f"{out_dir}/{dataset_id}/{zipinfo.filename}", "w") as fp:
-                                fp.write(str(xml))
+                            with open(f"{out_dir}/{dataset_id}/{zipinfo.filename}", "wb") as fp:
+                                fp.write(xml)
                         xmls.append(xml)
                     except Exception as e:
                         print("Error reading XML:", file=sys.stderr)

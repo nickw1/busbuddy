@@ -29,6 +29,7 @@ siri_params = SIRIVMParams(bounding_box=bounding_box)
 try:
     siri_response = bods.get_siri_vm_data_feed(params=siri_params)
     siri = Siri.from_bytes(siri_response)
+    print(siri)
     with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('DB_USER')}") as conn: 
         with conn.cursor() as cur:
             dao = journey.JourneyDao(cur)

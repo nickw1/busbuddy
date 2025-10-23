@@ -25,7 +25,7 @@ class TimetableDatabase:
             if tt is not None:
                 timetable = Timetable.from_string(tt) if raw_xmls_provided else Timetable.from_file_path(Path(tt))
 
-                for vj in timetable.vehicle_journeys:
+                for vj in [j for j in timetable.vehicle_journeys if j.operating_profile is not None]:
                     dep_time = vj.departure_time
                     block_number = vj.operational.block.block_number if vj.operational.block else None
                     jp = vj.journey_pattern_ref.resolve()
@@ -34,7 +34,7 @@ class TimetableDatabase:
                     operator = jp.operator_ref.resolve()
                     op_prof = vj.operating_profile.days_of_week
                     line = vj.line_ref.resolve().line_name
-                    run_days = [enumday.name[0:2].title() for enumday in op_prof]
+                    run_days = [enumday.name[0:2].title() for enumday in op_prof] 
                     journey_id=self.dao.insert_journey(block_number, line, operator.id, dest, dep_time, run_days, direction, rev_id)
         
                     first_stop = None

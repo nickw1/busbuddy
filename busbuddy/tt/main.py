@@ -39,6 +39,7 @@ if args.searchterm:
     else:
         print(f"Found {len(tt_response.results)} results.")
         for result in tt_response.results:
+            print(f"Parsing dataset {result.id}")
             datasets.append({
                 "xmls": process_timetable(result.url, result.id, cache_dir), 
                 "modified": result.modified,

@@ -16,11 +16,11 @@ class JourneyDao:
         self.cur.execute("UPDATE journeys SET origin=%s WHERE id=%s", (origin, id))
 
     def update_journey(self, id, block_ref, vehicle):
-        self.cur.execute("UPDATE journeys SET block_ref=%s WHERE id=%s AND block_ref IS NULL", (block_ref, id))
+        self.cur.execute("UPDATE journeys SET siri_block_ref=%s WHERE id=%s AND siri_block_ref IS NULL", (block_ref, id))
         n_blocks_updated = self.cur.rowcount
         self.cur.execute("UPDATE journeys SET vehicle_today=%s WHERE id=%s AND vehicle_today IS NULL", (vehicle, id))
         n_journeys_updated = self.cur.rowcount
         return (n_blocks_updated, n_journeys_updated)
 
     def clear_today(self):
-        self.cur.execute("UPDATE journeys SET block_ref=NULL, vehicle_today=NULL")
+        self.cur.execute("UPDATE journeys SET siri_block_ref=NULL, vehicle_today=NULL")

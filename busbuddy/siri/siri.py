@@ -45,8 +45,8 @@ try:
                     print(f"Ignoring record with no departure time")
                 else:
                     # Find in DB the corresponding journey record
-                    # populate its block_ref and vehicle_ref
-                    # another tool (running daily) will then dump a day's 
+                    # populate its siri_block_ref and vehicle_ref
+                    # The 'dailylog' tool will then dump a day's 
                     # records in another table and analyse the block_refs for 
                     # consistency
                     # vehicle_ref is provided for backup in case block_ref is 

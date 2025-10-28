@@ -27,7 +27,7 @@ with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('
             dates.add(date)
             if last_vehicle != result["vehicle_today"]:
                 #key = f"{result['route']}:{result['deptime'].hour*120+result['deptime'].minute*2+(1 if result['direction'][0] == 'i' else 0)}"
-                key = f"{result['block_ref'] if result['block_ref'] is not None else result['route']}:{result['journeyid']}"
+                key = f"{result['block_ref'] if result['block_ref'] is not None else result['journeyid']}"
                 last_vehicle = result["vehicle_today"]
                 if key not in workings:
                     workings[key] = {}

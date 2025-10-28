@@ -5,9 +5,10 @@
 # Use with cron or similar.
 from bods_client.client import BODSClient
 from bods_client.models import BoundingBox, SIRIVMParams, Siri
-from datetime import datetime
+from datetime import datetime, timedelta
 import psycopg
 import os
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from busbuddy.bodsdao import journey
 
@@ -25,11 +26,12 @@ bbox = {
 bounding_box = BoundingBox(**bbox)
 siri_params = SIRIVMParams(bounding_box=bounding_box)
 
+zone = ZoneInfo("Europe/London")
+is_dst = datetime.now().astimezone(zone).tzname() == "BST"
 
 try:
     siri_response = bods.get_siri_vm_data_feed(params=siri_params)
     siri = Siri.from_bytes(siri_response)
-    print(siri)
     with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('DB_USER')}") as conn: 
         with conn.cursor() as cur:
             dao = journey.JourneyDao(cur)
@@ -40,11 +42,14 @@ try:
 
             cur_day_of_week = now.strftime("%A")[0:2]
 
+            print(cur_day_of_week)
             for activity in siri.service_delivery.vehicle_monitoring_delivery.vehicle_activities:
+                print(activity)
                 deptime = activity.monitored_vehicle_journey.origin_aimed_departure_time
                 if deptime is None:
                     print(f"Ignoring record with no departure time")
                 else:
+                    print(deptime)
                     # Find in DB the corresponding journey record
                     # populate its siri_block_ref and vehicle_ref
                     # The 'dailylog' tool will then dump a day's 
@@ -52,7 +57,7 @@ try:
                     # consistency
                     # vehicle_ref is provided for backup in case block_ref is 
                     # not present
-                    time = deptime.time()
+                    time = (deptime + timedelta(hours=1 if is_dst else 0)).time()
                     journey = dao.find_journey(
                         cur_day_of_week, 
                         time,

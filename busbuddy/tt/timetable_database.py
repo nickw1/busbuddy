@@ -35,7 +35,9 @@ class TimetableDatabase:
                     op_prof = vj.operating_profile.days_of_week
                     line = vj.line_ref.resolve().line_name
                     run_days = [enumday.name[0:2].title() for enumday in op_prof] 
-                    journey_id=self.dao.insert_journey(block_number, line, operator.id, dest, dep_time, run_days, direction, rev_id)
+                    journey_code = vj.operational.ticket_machine.journey_code
+
+                    journey_id=self.dao.insert_journey(block_number, line, operator.id, dest, dep_time, run_days, direction, journey_code, rev_id)
         
                     first_stop = None
                     total_run_time = 0

@@ -18,7 +18,7 @@ enddate=sys.argv[2]
 
 with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('DB_USER')}", row_factory=dict_row) as conn:
     with conn.cursor() as cur:
-        cur.execute("SELECT j.route, j.deptime, j.direction, j.block_ref, log.journeyid, d.date, log.vehicle_today FROM daily_journey_log log INNER JOIN dates d ON d.id=log.dateid INNER JOIN journeys j ON j.id=log.journeyid WHERE extract(dow from d.date::timestamp) BETWEEN 1 AND 5 AND d.date BETWEEN %s AND %s ORDER BY log.dateid, log.vehicle_today, j.deptime", (startdate, enddate))
+        cur.execute("SELECT j.route, j.deptime, j.direction, j.block_ref, j.journey_code, log.journeyid, d.date, log.vehicle_today FROM daily_journey_log log INNER JOIN dates d ON d.id=log.dateid INNER JOIN journeys j ON j.id=log.journeyid WHERE extract(dow from d.date::timestamp) BETWEEN 1 AND 5 AND d.date BETWEEN %s AND %s ORDER BY log.dateid, log.vehicle_today, j.deptime", (startdate, enddate))
         results = cur.fetchall()
         last_vehicle = None
         key = None
@@ -27,7 +27,8 @@ with psycopg.connect(f"dbname={os.environ.get('DB_NAME')} user={os.environ.get('
             dates.add(date)
             if last_vehicle != result["vehicle_today"]:
                 #key = f"{result['route']}:{result['deptime'].hour*120+result['deptime'].minute*2+(1 if result['direction'][0] == 'i' else 0)}"
-                key = f"{result['block_ref'] if result['block_ref'] is not None else result['journeyid']}"
+                #key = f"{result['block_ref'] if result['block_ref'] is not None else result['journeyid']}"
+                key = result['block_ref'] if result['block_ref'] is not None else f"{result['route']}:{result['journey_code']}"
                 last_vehicle = result["vehicle_today"]
                 if key not in workings:
                     workings[key] = {}

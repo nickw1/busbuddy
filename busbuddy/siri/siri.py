@@ -12,6 +12,8 @@ from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from busbuddy.bodsdao import journey
 
+# activity.monitored_vehicle_journey.framed_vehicle_journey_ref.dated_vehicle_journey_ref
+
 load_dotenv()
 
 bods = BODSClient(api_key=os.environ.get('API_KEY'))

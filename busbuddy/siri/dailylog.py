@@ -16,7 +16,7 @@ try:
             cur.execute("INSERT INTO dates(date) VALUES (current_date-1) RETURNING id")
             date_id = int(cur.fetchone()[0])
             print(date_id)
-            cur.execute("INSERT INTO daily_journey_log SELECT  j.id AS journeyid, j.siri_block_ref, j.vehicle_today, j.journey_code, d.id as dateid FROM journeys j, dates d WHERE d.id=%s AND (j.vehicle_today IS NOT NULL OR j.siri_block_ref IS NOT NULL) ORDER BY j.vehicle_today, j.deptime", [date_id])
+            cur.execute("INSERT INTO daily_journey_log (journeyid, siri_block_ref, vehicle_today, journey_code, dateid) SELECT  j.id AS journeyid, j.siri_block_ref, j.vehicle_today, j.journey_code, d.id as dateid FROM journeys j, dates d WHERE d.id=%s AND (j.vehicle_today IS NOT NULL OR j.siri_block_ref IS NOT NULL) ORDER BY j.vehicle_today, j.deptime", [date_id])
             cur.execute("UPDATE journeys SET siri_block_ref=NULL, vehicle_today=NULL");
             conn.commit()
 except Exception as e:

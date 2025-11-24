@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS routestops;
 DROP TABLE IF EXISTS daily_journey_log;
 DROP TABLE IF EXISTS dates;
 
@@ -23,3 +24,5 @@ CREATE TABLE terms (id serial PRIMARY KEY, edid INT, startdate DATE, enddate DAT
 CREATE TABLE dates(id serial PRIMARY KEY, date DATE);
 
 CREATE TABLE daily_journey_log(journeyid INT, siri_block_ref VARCHAR(255), vehicle_today VARCHAR(255), journey_code VARCHAR(255), dateid INT, FOREIGN KEY (dateid) REFERENCES dates(id));
+
+CREATE TABLE routestops (id serial PRIMARY KEY, routes VARCHAR(255), stopid INT, FOREIGN KEY (stopid) REFERENCES stops(id));

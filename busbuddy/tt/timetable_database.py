@@ -15,6 +15,7 @@ class TimetableDatabase:
         self.stops = self.get_stops()
         self.day_of_week_list = list(DayOfWeek)
         self.timetable_dir = timetable_dir
+        self.done_lines = []
         
     def populate(self, modified, dataset_id, raw_xmls=None):
         raw_xmls_provided = raw_xmls is not None 
@@ -23,9 +24,11 @@ class TimetableDatabase:
         pattern = "BODS_*.xml"
         for tt in raw_xmls if raw_xmls_provided else globbed:
             if tt is not None:
-                timetable = Timetable.from_string(tt) if raw_xmls_provided else Timetable.from_file_path(Path(tt))
+                self.timetable = Timetable.from_string(tt) if raw_xmls_provided else Timetable.from_file_path(Path(tt))
 
-                for vj in [j for j in timetable.vehicle_journeys if j.operating_profile is not None]:
+                self.populate_route_stops()
+
+                for vj in [j for j in self.timetable.vehicle_journeys if j.operating_profile is not None]:
                     dep_time = vj.departure_time
                     block_number = vj.operational.block.block_number if vj.operational.block else None
                     jp = vj.journey_pattern_ref.resolve()
@@ -67,3 +70,18 @@ class TimetableDatabase:
         for row in self.cur:
             stops[row[0]] = row[1:]
         return stops
+
+    def populate_route_stops(self):
+        if self.timetable.services is not None:
+            line_nums = ",".join([str(line.line_name) for line in self.timetable.services[0].lines])
+            # There might be multiple copies of the same route's 
+            # timetable in the XML
+            if line_nums not in self.done_lines:
+                self.done_lines.append(line_nums)
+                for stop_point in self.timetable.stop_points:
+                    atco_code = stop_point.stop_point_ref.text
+                    try:
+                       stop_id = self.stops[atco_code][0]
+                       self.cur.execute("INSERT INTO routestops(routes, stopid) VALUES (%s,%s)", (line_nums, stop_id))
+                    except KeyError as e:
+                        print(f"Unable to find atco code {atco_code}")

@@ -29,7 +29,7 @@ def process_timetable(url, dataset_id, out_dir):
                         if save_tt:
                             with open(f"{out_dir}/{dataset_id}/{zipinfo.filename}", "wb") as fp:
                                 fp.write(xml)
-                        xmls.append(xml)
+                        xmls.append({"xml": xml, "filename": zipinfo.filename})
                     except Exception as e:
                         print("Error reading XML:", file=sys.stderr)
                         print(e, file=sys.stderr)

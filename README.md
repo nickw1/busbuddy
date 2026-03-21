@@ -1,6 +1,6 @@
 # busbuddy
 
-`busbuddy` is the working name for a project to provide improved bus tracking in the UK, making use of [Bus Open Data Service](https://data.bus-data.dft.gov.uk) (BODS) data.
+`busbuddy` is the working name for an investigative project to provide improved bus tracking in the UK, making use of [Bus Open Data Service](https://data.bus-data.dft.gov.uk) (BODS) data.
 
 ## Why?
 
@@ -18,7 +18,21 @@ At the moment this repository just contains experimental tools for setting up a 
 
 Key to the development of such a system is what's called the *block number*. Each vehicle should, in theory, operate a certain, predictable sequence of journeys (not necessarily on the same route) during the course of the day. The block number describes this sequence of journeys. In theory it should be included in the timetable data but in my experience it is missing, or can be inaccurate (doesn't accord with on-the-ground observations).
 
-However, the SIRI (live bus running info) data appears to more reliably contain the block number for the current day, at least for my local operator. What we can thus do is monitor the SIRI data continuously through the course of a day and populate the timetables database with the information (for the current day). At the end of the day we record all the journeys with a given block number. We can then analyse this data over multiple days to see if it is consistent.
+However, the SIRI (live bus running info) data appears to more reliably contain the block number for the current day, at least for my local operator. What we can thus do is monitor the SIRI data continuously through the course of a day and populate the timetables database with the information (for the current day). At the end of the day we record all the journeys with a given block number. We can then analyse this data over multiple days (e.g a two-week period) to see if it is consistent.
+
+## Results so far
+
+While no formal analysis has yet been done, results so far appear to be somewhat positive in the sense that actual workings discovered by the application actually exist in real life. However there are a number of issues:
+
+- Frequency of working updates: I was (naively) expecting bus workings to change perhaps annually, at the start of the school/college year in September. However the local bus operator appears to change them more frequently, making sometimes significant tweaks once a term and even at half-terms. Thus any workings discovered by the application may not last long!
+
+- Workings not sticking to plan, e.g. because a bus has a problem halfway through the day.
+
+- Mondays appear to have different workings than Tues-Fri locally. 
+
+The second problem isn't a deal-breaker providing it only occurs on a minority of days for a given working, though the first is more problematic: by the time workings have been analysed over a period of two weeks, the current workings may only be weeks from further change.
+
+The hope, thus, is that block numbers will be provided more generally in BODS data in due course!
 
 ## Programs
 
